@@ -1,0 +1,18 @@
+{
+  "version": 4,
+  "configurations": [
+    {
+      "name": "ESP32",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "/Users/fufu/Library/Arduino15/packages/esp32/hardware/esp32/3.3.10/**",
+        "/Users/fufu/Library/Arduino15/packages/esp32/tools/esp32-libs/3.3.10/include/**",
+        "/Users/fufu/Library/Arduino15/packages/esp32/tools/esp32-libs/3.3.10/qio_qspi/include",
+        "/Users/fufu/Documents/Arduino/libraries/**"
+      ],
+      "compilerPath": "/Users/fufu/Library/Arduino15/packages/esp32/tools/esp-x32/2601/bin/xtensa-esp32-elf-g++",
+      "intelliSenseMode": "gcc-x86",
+      "cppStandard": "gnu++17"
+    }
+  ]
+}

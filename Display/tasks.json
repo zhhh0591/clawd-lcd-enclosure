@@ -1,0 +1,18 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "ESP32: Compile",
+      "type": "shell",
+      "command": "arduino-cli compile --fqbn esp32:esp32:esp32 --build-path .vscode/build --only-compilation-database . ; arduino-cli compile --fqbn esp32:esp32:esp32 --build-path .vscode/build .",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "ESP32: Upload",
+      "type": "shell",
+      "command": "arduino-cli compile --fqbn esp32:esp32:esp32 --build-path .vscode/build . && arduino-cli upload -p /dev/cu.usbserial-10 --fqbn esp32:esp32:esp32 --input-dir .vscode/build .",
+      "problemMatcher": ["$gcc"]
+    }
+  ]
+}
