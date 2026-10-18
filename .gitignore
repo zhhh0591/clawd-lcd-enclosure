@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+
+# AutoCAD backups and lock files
+*.bak
+*.dwl
+*.dwl2
+
+# Arduino / VS Code build output
+Display/.vscode/build/
