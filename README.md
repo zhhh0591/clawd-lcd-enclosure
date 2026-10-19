@@ -19,6 +19,8 @@ The enclosure is ten 1/8 in. layers stacked together. Every layer uses the same 
 
 Four 6.4 mm holes go through every layer for M6 bolts that clamp the stack together.
 
+The drawing in `works/` has 3 bezel and 5 PCB layers. After measuring, my LCD is only 12 mm thick, so the files in `FYELIC/` cut 1 bezel and 4 PCB layers instead. That is 7 pieces and 15 mm of space for the LCD.
+
 ## Files
 
 | Path | What it is |
@@ -37,7 +39,7 @@ Four 6.4 mm holes go through every layer for M6 bolts that clamp the stack toget
 
 ## Laser cutting
 
-- Material: 1/8 in. (about 3 mm) or thinner. Three 12 x 12 in. sheets with 4, 4 and 2 parts. One part on sheets 1 and 2 is turned 90° to fit, which doesn't change the part. Sheet 3 is only about half used.
+- Material: 1/8 in. (about 3 mm) or thinner. Two 12 x 12 in. sheets with 4 and 3 parts. One part on sheet 1 is turned 90° to fit, which doesn't change the part.
 - Red lines are cuts. The files in `FYELIC/` only have the red cut lines, so they can go straight into the FYELIC template.
 - Measure the real sheet thickness first. If it is thinner than 2.9 mm, add a sixth PCB layer.
 - Cut the front plate and one bezel layer first and test them with the LCD. If the pocket is too tight, open the clearance from 0.3 mm to 0.4 mm before cutting the rest.
@@ -56,7 +58,7 @@ Store-bought M6 x 40 mm bolts and nuts work too.
 ## Assembly
 
 1. Lightly sand the burnt edges.
-2. Stack the layers in order (front, 3 bezel, 5 PCB), using the bolts to line them up.
+2. Stack the layers in order (front, 1 bezel, 4 PCB), using the bolts to line them up.
 3. Glue the front plate and bezel layers with wood glue.
 4. Put the LCD in from the back.
 5. Add the back plate and tighten the four bolts. Don't overtighten printed threads.
