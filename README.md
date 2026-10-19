@@ -28,7 +28,7 @@ Four 6.4 mm holes go through every layer for M6 bolts that clamp the stack toget
 | `works/Zheng_AC4.pdf` | 2-page drawing at 1:1, one 12 x 18 in. sheet per page |
 | `works/Zheng_AC4_Memo.pdf` | Design memo |
 | `FYELIC/Zheng_AC4_CUT_12x12.pdf` | Cut lines only, one 12 x 12 in. page per sheet, for the laser cutter |
-| `FYELIC/Zheng_AC4_CUT_12x12_sheet1.dxf` to `..._sheet3.dxf` | Cut lines only as DXF, origin at the corner of the sheet |
+| `FYELIC/Zheng_AC4_CUT_12x12.dxf` | Cut lines only as one DXF, the three sheets side by side (sheet outlines on a non-printing `SHEET` layer) |
 | `3D_print/M6x40_bolt.stl`, `M6_nut.stl` | Printable M6 bolt and nut |
 | `3D_print/M6_bolts_and_nuts_x4.3mf` | 4 bolts + 4 nuts on one plate |
 | `3D_print/*.bgcode` | Sliced file for the Prusa MK4 |
