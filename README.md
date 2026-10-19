@@ -41,7 +41,7 @@ The drawing in `works/` has 3 bezel and 5 PCB layers. After measuring, my LCD is
 
 - Material: 1/8 in. (about 3 mm) or thinner. Two 12 x 12 in. sheets with 4 and 3 parts. One part on sheet 1 is turned 90° to fit, which doesn't change the part.
 - Red lines are cuts. The files in `FYELIC/` only have the red cut lines, so they can go straight into the FYELIC template.
-- Measure the real sheet thickness first. If it is thinner than 2.9 mm, add a sixth PCB layer.
+- Measure the real sheet thickness first. If it is thinner than 2.5 mm, add a fifth PCB layer.
 - Cut the front plate and one bezel layer first and test them with the LCD. If the pocket is too tight, open the clearance from 0.3 mm to 0.4 mm before cutting the rest.
 
 ## 3D printed bolts
@@ -60,7 +60,7 @@ Store-bought M6 x 40 mm bolts and nuts work too.
 1. Lightly sand the burnt edges.
 2. Stack the layers in order (front, 1 bezel, 4 PCB), using the bolts to line them up.
 3. Glue the front plate and bezel layers with wood glue.
-4. Put the LCD in from the back.
+4. Put the LCD in from the back. There is about 3 mm of extra depth, so add a piece of foam tape behind the backpack to keep it from moving.
 5. Add the back plate and tighten the four bolts. Don't overtighten printed threads.
 
 ## Display (work in progress)
