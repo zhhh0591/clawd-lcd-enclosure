@@ -1,8 +1,26 @@
-# Clawd LCD Enclosure
+# 👾 Clawd Token Counter
 
-A laser-cut stand for a 16x2 LCD with an I2C backpack, shaped like Clawd, the pixel mascot from Claude Code. I made it for AutoCAD Lab #4 in GE1501/1502 (Cornerstone of Engineering, Fall 2026). The plan is to use the screen to show my daily token usage.
+**A laser-cut Clawd that lives on your desk and tells you how many Claude Code tokens you've burned today.**
 
+<!-- TODO: swap this drawing for a photo or GIF of the finished build -->
 ![Sheet 1 of the drawing](docs/sheet1.png)
+
+Clawd cycles through four screens, 4 seconds each (example values):
+
+| Screen | Top row | Bottom row |
+|---|---|---|
+| Tokens today | `TOKENS TODAY` | `94,160,868` |
+| Output and replies | `OUTPUT 1,203,445` | `REPLIES 312` |
+| Clock | `Tue, Oct 20 2026` | `03:41:07 PM` |
+| Last reply | `LAST REPLY` | `02:58 PM 43m ago` |
+
+- Reads your local Claude Code logs (`~/.claude/projects`). Nothing leaves your computer.
+- A plain ESP32 + 16x2 I2C LCD, connected to your computer over USB.
+- Laser-cut files are ready for a 12 x 12 in. bed, and the bolts are 3D-printable.
+
+Started as AutoCAD Lab #4 for GE1501/1502 (Cornerstone of Engineering) at Northeastern University, Fall 2026.
+
+> Unofficial fan project. Clawd and Claude Code belong to Anthropic. This project is not affiliated with or endorsed by Anthropic.
 
 ## How it works
 
@@ -35,7 +53,8 @@ The drawing in `works/` has 3 bezel and 5 PCB layers. After measuring, my LCD is
 | `3D_print/M6_bolts_and_nuts_x4.3mf` | 4 bolts + 4 nuts on one plate |
 | `3D_print/*.bgcode` | Sliced file for the Prusa MK4 |
 | `LCD.dwg` | LCD reference drawing provided by the course |
-| `Display/` | ESP32 sketch for the screen |
+| `Display/Display.ino` | ESP32 sketch for the screen |
+| `Display/claude_usage.py` | Script that totals today's Claude Code tokens and sends them to the ESP32 |
 
 ## Laser cutting
 
@@ -63,9 +82,20 @@ Store-bought M6 x 40 mm bolts and nuts work too.
 4. Put the LCD in from the back. There is about 3 mm of extra depth, so add a piece of foam tape behind the backpack to keep it from moving.
 5. Add the back plate and tighten the four bolts. Don't overtighten printed threads.
 
-## Display 
+## Display
 
-`Display/Display.ino` runs on an ESP32 and drives the LCD over I2C with the `hd44780` library. prints text about the time change and daily tokens usages will listed last conversation time and how many replies within a day Its updated every day 12:00.
+`Display/Display.ino` runs on an ESP32 and drives the LCD over I2C with the `hd44780` library. On your computer, `Display/claude_usage.py` adds up today's Claude Code usage from the local session logs and sends it to the ESP32 over USB serial (115200 baud) each time it refreshes. The screen rotates through the four pages shown at the top. If no data arrives for a minute, the token pages show `NO DATA`. The counts start over at local midnight.
+
+To run it:
+
+```bash
+pip install pyserial
+python3 Display/claude_usage.py --watch 10 --port auto
+```
+
+`--watch 10` refreshes every 10 seconds. `--port auto` looks for `/dev/cu.usbserial-*` or `/dev/cu.usbmodem*` (macOS). Leave out `--port` to only print today's totals in the terminal.
+
+The startup screen says `HELLO, Honghan!`. Change it in `setup()` in `Display.ino` before you flash your own.
 
 ## Key LCD dimensions
 
