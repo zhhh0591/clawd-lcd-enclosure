@@ -3,7 +3,7 @@
 Usage:
     python3 claude_usage.py                      # print today's totals once
     python3 claude_usage.py --watch 10           # refresh every 10 s
-    python3 claude_usage.py --watch 10 --port /dev/cu.usbserial-110   # also send to the ESP32
+    python3 claude_usage.py --watch 10 --port auto   # also send to the ESP32 (finds /dev/cu.usbserial-*)
 
 Every assistant reply in ~/.claude/projects/**/*.jsonl carries message.usage. A reply is
 logged several times while it streams, so records are keyed by (message.id, requestId)
@@ -25,9 +25,10 @@ class UsageCounter:
         self.day = None
         self.offsets = {}       # file -> bytes already read
         self.replies = {}       # (message.id, requestId) -> {field: tokens}
+        self.last_reply = None  # local time of the newest reply today
 
     def _reset(self, day):
-        self.day, self.offsets, self.replies = day, {}, {}
+        self.day, self.offsets, self.replies, self.last_reply = day, {}, {}, None
 
     def _read_new_lines(self, path):
         start = self.offsets.get(path, 0)
@@ -61,6 +62,8 @@ class UsageCounter:
                 when = dt.datetime.fromisoformat(rec["timestamp"].replace("Z", "+00:00")).astimezone()
                 if when.date() != today:
                     continue
+                if self.last_reply is None or when > self.last_reply:
+                    self.last_reply = when
                 key = (msg.get("id"), rec.get("requestId"))
                 seen = self.replies.setdefault(key, dict.fromkeys(FIELDS, 0))
                 for f in FIELDS:
@@ -74,7 +77,20 @@ class UsageCounter:
                 t[f] += r[f]
         t["total"] = sum(t[f] for f in FIELDS)
         t["replies"] = len(self.replies)
+        t["last_reply"] = self.last_reply
         return t
+
+
+def local_epoch(when):
+    """Seconds since 1970 on the local wall clock, so the ESP32 needs no time zone."""
+    return int(when.timestamp() + when.utcoffset().total_seconds())
+
+
+def stats_line(t):
+    """STATS:<total>,<output>,<replies>,<now>,<last reply>  (times as local epoch, 0 = none yet)"""
+    now = local_epoch(dt.datetime.now().astimezone())
+    last = local_epoch(t["last_reply"]) if t["last_reply"] else 0
+    return f"STATS:{t['total']},{t['output_tokens']},{t['replies']},{now},{last}\n"
 
 
 def show(t):
@@ -83,25 +99,54 @@ def show(t):
             f"cache read {t['cache_read_input_tokens']:,}  |  {t['replies']} replies")
 
 
+class Display:
+    """Serial link to the ESP32 that survives the USB cable being unplugged and plugged back in."""
+
+    def __init__(self, port, baud):
+        import serial                           # pyserial
+        self.serial, self.port, self.baud, self.link = serial, port, baud, None
+
+    def _find_port(self):
+        if self.port != "auto":
+            return self.port if os.path.exists(self.port) else None
+        found = sorted(glob.glob("/dev/cu.usbserial-*")) + sorted(glob.glob("/dev/cu.usbmodem*"))
+        return found[0] if found else None
+
+    def send(self, line):
+        if self.link is None:
+            port = self._find_port()
+            if port is None:
+                print("  (display not connected, will keep looking)", flush=True)
+                return
+            try:
+                self.link = self.serial.Serial(port, self.baud, timeout=1)
+            except self.serial.SerialException as err:
+                print(f"  (could not open {port}: {err})", flush=True)
+                return
+            print(f"  (connected to {port})", flush=True)
+            time.sleep(2)                       # opening the port resets the ESP32
+        try:
+            self.link.write(line.encode())
+        except (self.serial.SerialException, OSError):
+            print("  (display unplugged, will reconnect)", flush=True)
+            self.link.close()
+            self.link = None
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--watch", type=float, metavar="SECONDS", help="keep refreshing")
-    ap.add_argument("--port", help="serial port of the ESP32; sends 'TOKENS:<total>' lines")
+    ap.add_argument("--port", help="serial port of the ESP32, or 'auto'; sends one STATS line per refresh")
     ap.add_argument("--baud", type=int, default=115200)
     args = ap.parse_args()
 
-    link = None
-    if args.port:
-        import serial                           # pyserial
-        link = serial.Serial(args.port, args.baud, timeout=1)
-        time.sleep(2)                           # opening the port resets the ESP32
-
+    display = Display(args.port, args.baud) if args.port else None
     counter = UsageCounter()
     while True:
         t = counter.update()
         print(show(t), flush=True)
-        if link:
-            link.write(f"TOKENS:{t['total']}\n".encode())
+        if display:
+            display.send(stats_line(t))
         if not args.watch:
             break
         time.sleep(args.watch)
