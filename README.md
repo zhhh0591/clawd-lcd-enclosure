@@ -35,7 +35,7 @@ The drawing in `works/` has 3 bezel and 5 PCB layers. After measuring, my LCD is
 | `3D_print/M6_bolts_and_nuts_x4.3mf` | 4 bolts + 4 nuts on one plate |
 | `3D_print/*.bgcode` | Sliced file for the Prusa MK4 |
 | `LCD.dwg` | LCD reference drawing provided by the course |
-| `Display/` | ESP32 sketch for the screen (work in progress) |
+| `Display/` | ESP32 sketch for the screen |
 
 ## Laser cutting
 
@@ -63,9 +63,9 @@ Store-bought M6 x 40 mm bolts and nuts work too.
 4. Put the LCD in from the back. There is about 3 mm of extra depth, so add a piece of foam tape behind the backpack to keep it from moving.
 5. Add the back plate and tighten the four bolts. Don't overtighten printed threads.
 
-## Display (work in progress)
+## Display 
 
-`Display/Display.ino` runs on an ESP32 and drives the LCD over I2C with the `hd44780` library. Right now it only prints a test message. The token counter is next.
+`Display/Display.ino` runs on an ESP32 and drives the LCD over I2C with the `hd44780` library. prints text about the time change and daily tokens usages will listed last conversation time and how many replies within a day Its updated every day 12:00.
 
 ## Key LCD dimensions
 
@@ -81,4 +81,4 @@ From `LCD.dwg`, checked against a 1602 datasheet.
 
 ---
 
-Honghan Zheng · GE1501/1502 · Fall 2026
+Honghan Zheng · Project made for GE1501/1502 · Fall 2026
